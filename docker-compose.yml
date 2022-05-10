@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  pixano_api:
+    build: .
+    container_name: pixano_api
+    volumes:
+      - ./src:/app/src
+    network_mode: host
