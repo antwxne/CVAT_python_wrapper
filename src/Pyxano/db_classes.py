@@ -9,13 +9,13 @@ class DbVersion:
     def __init__(self, version: str):
         self.version: str = version
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "version": self.version
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class DbUser:
@@ -26,7 +26,7 @@ class DbUser:
         self.curr_assigned_jobs: dict[str:str] = values["curr_assigned_jobs"]
         self.queue: dict[str:list[str]] = values["queue"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "username": self.username,
             "role": self.role,
@@ -36,7 +36,7 @@ class DbUser:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class DbDataset:
@@ -45,15 +45,19 @@ class DbDataset:
         self.path: str = values["path"]
         self.data_type: str = values["data_type"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "id": self.id,
             "path": self.path,
             "data_type": self.data_type
         }
 
+    @staticmethod
+    def from_json(json_obj: dict):
+        return DbDataset(json_obj)
+
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class DbData:
@@ -65,7 +69,7 @@ class DbData:
         self.children: list[DbFrame] = [DbFrame(value) for value in values["children"]]
         self.thumbnail: Optional[str] = values["thumbnail"] if "thumbnail" in values else None
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "id": self.id,
             "dataset_id": self.dataset_id,
@@ -76,7 +80,7 @@ class DbData:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class DbFrame:
@@ -84,14 +88,14 @@ class DbFrame:
         self.timestamp: int = values["timestamp"]
         self.path: Union[str, list[str]] = values["path"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "timestamp": self.timestamp,
             "path": self.path,
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # Custom Label Specifications
@@ -102,7 +106,7 @@ class DbSpec:
         self.data_type: str = values["data_type"]
         self.label_schema: str = values["label_schema"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "id": self.id,
             "plugin_name": self.plugin_name,
@@ -111,7 +115,7 @@ class DbSpec:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # An annotation task consists of label specifications and a dataset
@@ -121,7 +125,7 @@ class DbTask:
         self.spec_id: str = values["spec_id"]
         self.dataset_id: str = values["dataset_id"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "name": self.name,
             "spec_id": self.spec_id,
@@ -129,7 +133,7 @@ class DbTask:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class DbJob:
@@ -143,7 +147,7 @@ class DbJob:
         self.duration: int = values["duration"]
         self.last_update_at: int = values["last_update_at"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "id": self.id,
             "task_name": self.task_name,
@@ -156,7 +160,7 @@ class DbJob:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # Annotation jobs summary for a data item
@@ -172,7 +176,7 @@ class DbResult:
         self.validator: str = values["validator"]
         self.in_progress: bool = values["in_progress"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "task_name": self.task_name,
             "data_id": self.data_id,
@@ -186,7 +190,7 @@ class DbResult:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # Labels for an image
@@ -196,7 +200,7 @@ class DbLabel:
         self.data_id: str = values["data_id"]
         self.annotations: Any = values["annotations"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "task_name": self.task_name,
             "data_id": self.data_id,
@@ -204,7 +208,7 @@ class DbLabel:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # Labels statistic for an image
@@ -214,7 +218,7 @@ class DbLabelStatistics:
         self.data_id: str = values["data_id"]
         self.value: Any = values["value"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "task_name": self.task_name,
             "data_id": self.data_id,
@@ -222,7 +226,7 @@ class DbLabelStatistics:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 # User info
@@ -234,7 +238,7 @@ class RestUser:
         self.role: str = values["role"]
         self.preferences: dict = values["preferences"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "id": self.id,
             "username": self.username,
@@ -244,7 +248,7 @@ class RestUser:
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class RestTask:
@@ -253,15 +257,15 @@ class RestTask:
         self.dataset: DbDataset = DbDataset(values["dataset"])
         self.spec: DbSpec = DbSpec(values["spec"])
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "name": self.name,
-            "dataset": self.dataset.to_json(),
-            "spec": self.spec.to_json()
+            "dataset": self.dataset.json(),
+            "spec": self.spec.json()
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class RestJobUpdate:
@@ -269,14 +273,14 @@ class RestJobUpdate:
         self.objective: str = values["objective"]
         self.comments: Any = values["comments"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "objective": self.objective,
             "comments": self.comments
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)
 
 
 class RestBatchJobUpdate:
@@ -284,11 +288,11 @@ class RestBatchJobUpdate:
         self.job_ids: list[str] = values["job_ids"]
         self.objective: str = values["objective"]
 
-    def to_json(self) -> dict:
+    def json(self) -> dict:
         return {
             "job_ids": self.job_ids,
             "objective": self.objective
         }
 
     def __repr__(self) -> str:
-        return json.dumps(self.to_json(), indent=2)
+        return json.dumps(self.json(), indent=2)

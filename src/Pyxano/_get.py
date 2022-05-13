@@ -1,37 +1,18 @@
 #!/bin/python3
-# Created by antoine.desruet@epitech.eu at 5/10/22
+# Created by antoine.desruet@epitech.eu at 5/12/22
+import abc
 import json
-from typing import Optional, Union
+from typing import Union, Optional
 
 from requests import Response
-from requests.sessions import Session, session
-from src.Pyxano import constants
-from src.Pyxano.db_classes import DbResult, RestTask
+
+from src.Pyxano.db_classes import RestTask, DbResult, DbDataset
 
 
-class Pyxano:
-    def __init__(self, username: str = "admin", password: str = "admin", url: str = "http://localhost:3000/api/v1"):
-        """
-        This function takes in a username, password, and url and uses them to log into the Grafana API
-
-        Args:
-          username (str): The username of the user you want to log in as. Defaults to admin
-          password (str): str = "admin". Defaults to admin
-          url (str): The url of the Grafana instance. Defaults to http://localhost:3000/api/v1
-
-        Raises:
-            ValueError: if the credentials aren't correct
-        """
-        self.session: Session = session()
-        self.url: str = url
-        self.session.headers = {"Content-Type": "application/json"}
-        body: dict = {
-            "username": username,
-            "password": password
-        }
-        response: Response = self.session.post(url=f'{self.url}/login', data=json.dumps(body))
-        if response.status_code != 200:
-            raise ValueError("Bad credentials")
+class Get:
+    @abc.abstractmethod
+    def __init__(self):
+        raise NotImplementedError
 
     def get_tasks(self, as_dict: bool = True) -> Union[list[dict], list[RestTask]]:
         """
@@ -45,7 +26,7 @@ class Pyxano:
           A list of dictionaries or a list of RestTask objects.
         """
         response: Response = self.session.get(url=f'{self.url}/tasks')
-        content: list[dict] = json.loads(response.content)
+        content: list[dict] = response.json()
         return content if as_dict else [RestTask(value) for value in content]
 
     def get_task(self, name: str, as_dict: bool = True) -> Union[dict, RestTask]:
@@ -63,12 +44,13 @@ class Pyxano:
             ValueError: if the task doesn't exist
         """
         response: Response = self.session.get(url=f'{self.url}/tasks/{name}')
-        content: dict = json.loads(response.content)
+        content: dict = response.json()
         if response.status_code == 400:
             raise ValueError(content["message"])
         return content if as_dict else RestTask(content)
 
-    def get_results(self, task_name: str, first: Optional[int] = None, as_dict: bool = True) -> Union[list[dict], list[DbResult]]:
+    def get_results(self, task_name: str, first: Optional[int] = None, as_dict: bool = True) -> Union[
+        list[dict], list[DbResult]]:
         """
         > This function gets the results of a task from the database and returns them as a list of dictionaries or a list of
         DbResult objects
@@ -88,7 +70,7 @@ class Pyxano:
         results: list[dict] = []
         while current <= stop:
             response: Response = self.session.get(url=f'{self.url}/tasks/{task_name}/results?page={1}&count=100')
-            content: dict = json.loads(response.content)
+            content: dict = response.json()
             stop = content["counter"]
             results.extend(content["results"])
             current = len(results)
@@ -111,43 +93,6 @@ class Pyxano:
         content: dict = json.loads(response.content)
         return content["annotations"]
 
-    def add_user(self, username: str, password: str, role: str) -> None:
-        """
-        This function adds a user to the database
-
-        Args:
-          username (str): The username of the user you want to add.
-          password (str): The password for the user.
-          role (str): str - The role of the user. Can be one of the following:
-        Raises:
-            ValueError: if the user is already in the database
-        """
-        if role not in constants.ROLES:
-            raise ValueError(f'Role <{role}> value error, please select one of the following: {constants.ROLES}')
-        body: dict = {
-            "username": username,
-            "password": password,
-            "role": role,
-            "preferences": {
-                "theme": "white"
-            }
-        }
-        response: Response = self.session.post(url=f'{self.url}/users',
-                                               data=json.dumps(body))
-        if response.status_code != 201:
-            raise ValueError(f'{username}: {json.loads(response.content)["message"]}')
-
-    def delete_user(self, username: str):
-        """
-        It deletes a user from the database.
-
-        Args:
-          username (str): The username of the user to delete.
-
-        Raises:
-            ValueError: if the user isn't in the database
-        """
-        response: Response = self.session.delete(url=f'{self.url}/users/{username}', )
-        if response.status_code != 204:
-            raise ValueError(response.content)
-
+    def get_datasets(self, as_dict: bool = True) -> Union[list[dict], list[DbDataset]]:
+        response: Response = self.session.get(url=f'{self.url}/datasets')
+        return response.json() if as_dict else [DbDataset(elem) for elem in response.json()]
