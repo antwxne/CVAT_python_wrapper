@@ -16,12 +16,26 @@ class Post:
         raise NotImplementedError
 
     def create_task(self, task: Task):
+        """
+        It creates a task
+
+        Args:
+          task (Task): Task - this is the task object that we want to create.
+        """
         body: dict = task.to_json()
         response: Response = self.session.post(url=f'{self.url}/api/tasks', json=body)
         if response.status_code != 201:
             raise ValueError(response.content)
 
     def add_remote_data_to_task(self, task_id: int, urls: list[str], image_quality: int = 100) -> None:
+        """
+        It takes a list of URLs, and adds them to a task
+
+        Args:
+          task_id (int): The ID of the task you want to add data to.
+          urls (list[str]): A list of URLs to images.
+          image_quality (int): The quality of the image to be uploaded. Defaults to 100
+        """
         body: dict = {"image_quality": image_quality}
         self.session.post(url=f'{self.url}/api/tasks/{task_id}/data?Upload-Start=True',
                           json=body)

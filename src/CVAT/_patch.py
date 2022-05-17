@@ -16,6 +16,13 @@ class Patch:
         raise NotImplementedError
 
     def assign_user_to_task(self, task_name: str, username: str) -> None:
+        """
+        It takes a task name and a username as arguments, and assigns the user to the task
+
+        Args:
+          task_name (str): str - The name of the task you want to assign a user to.
+          username (str): The username of the user you want to assign the task to.
+        """
         task: Optional[Task] = self.get_task_by_name(task_name)
         user: Optional[BasicUser] = self.get_user_by_username(username)
         if user is None or task is None:

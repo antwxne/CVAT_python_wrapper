@@ -78,10 +78,10 @@ class Task(CVATData):
         new_task: Task = Task(name="", project_id=0)
         new_task.name = get_key_value(json_response, "name")
         new_task.labels = get_key_value(json_response, "labels")
-        new_task.project_id =get_key_value(json_response, "project_id")
+        new_task.project_id = get_key_value(json_response, "project_id")
         new_task.url = get_key_value(json_response, "url")
         new_task.id = get_key_value(json_response, "id")
-        new_task.mode =get_key_value(json_response, "mode")
+        new_task.mode = get_key_value(json_response, "mode")
 
         owner: Optional[dict] = get_key_value(json_response, "url")
         new_task.owner = BasicUser.from_json(owner) if owner is not None else None
@@ -89,7 +89,7 @@ class Task(CVATData):
         assignee: Optional[dict] = get_key_value(json_response, "assignee")
         new_task.assignee = BasicUser.from_json(assignee) if assignee is not None else None
         new_task.owner_id = get_key_value(json_response, "owner_id")
-        new_task.assignee_id =get_key_value(json_response, "assignee_id")
+        new_task.assignee_id = get_key_value(json_response, "assignee_id")
         new_task.bug_tracker = get_key_value(json_response, "bug_tracker")
         new_task.created_date = get_key_value(json_response, "created_date")
         new_task.updated_date = get_key_value(json_response, "updated_date")
