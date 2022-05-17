@@ -7,12 +7,5 @@ from src.CVAT.data_types import Task
 API: CVAT = CVAT()
 
 if __name__ == "__main__":
-    a = Task(name="OLELE", labels=[
-        {
-            "name": "Mandatory",
-            "attributes": []
-        }
-    ])
-    print(a.to_json())
-    API.create_task(a)
+    API.assign_user_to_task(task_name="667", username="admin")
 

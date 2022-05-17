@@ -1,18 +1,17 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/10/22
 
-import json
-
 from requests import Response
 from requests.sessions import Session, session
+
 from ._delete import Delete
 from ._get import Get
+from ._patch import Patch
 from ._post import Post
 from ._static import Static
-from .data_types import Task
 
 
-class CVAT(Get, Post, Delete, Static):
+class CVAT(Get, Post, Delete, Patch, Static):
     def __init__(self, username: str = "admin", password: str = "admin", url: str = "http://localhost:8080"):
         """
         This function takes in a username, password, and url and uses them to log into the Grafana API
@@ -31,8 +30,8 @@ class CVAT(Get, Post, Delete, Static):
             "username": username,
             "password": password
         }
-        response: Response = self.session.post(url=f'{self.url}/api/auth/login', json=body)
+        response: Response = self.session.post(url=f'{self.url}/api/auth/login',
+                                               json=body)
         self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
-

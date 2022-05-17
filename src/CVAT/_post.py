@@ -20,3 +20,14 @@ class Post:
         response: Response = self.session.post(url=f'{self.url}/api/tasks', json=body)
         if response.status_code != 201:
             raise ValueError(response.content)
+
+    def add_remote_data_to_task(self, task_id: int, urls: list[str], image_quality: int = 100) -> None:
+        body: dict = {"image_quality": image_quality}
+        self.session.post(url=f'{self.url}/api/tasks/{task_id}/data?Upload-Start=True',
+                          json=body)
+        body["remote_files"] = urls
+        response: Response = self.session.post(
+            url=f'{self.url}/api/tasks/{task_id}/data?Upload-Multiple={len(urls) > 1}',
+            json=body)
+        if response.status_code != 202:
+            raise ValueError(response.content)
