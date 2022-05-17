@@ -1,8 +1,8 @@
 version: "3.9"
 services:
-  pixano_api:
+  cvat_wrapper:
     build: .
-    container_name: pixano_api
+    container_name: cvat_wrapper
     volumes:
       - ./src:/app/src
     network_mode: host

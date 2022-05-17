@@ -8,10 +8,12 @@ from requests.sessions import Session, session
 from ._delete import Delete
 from ._get import Get
 from ._post import Post
+from ._static import Static
+from .data_types import Task
 
 
-class Pyxano(Get, Post, Delete):
-    def __init__(self, username: str = "admin", password: str = "admin", url: str = "http://localhost:3000/api/v1"):
+class CVAT(Get, Post, Delete, Static):
+    def __init__(self, username: str = "admin", password: str = "admin", url: str = "http://localhost:8080"):
         """
         This function takes in a username, password, and url and uses them to log into the Grafana API
 
@@ -29,6 +31,8 @@ class Pyxano(Get, Post, Delete):
             "username": username,
             "password": password
         }
-        response: Response = self.session.post(url=f'{self.url}/login', json=body)
+        response: Response = self.session.post(url=f'{self.url}/api/auth/login', json=body)
+        self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
+
