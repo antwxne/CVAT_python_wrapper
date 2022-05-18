@@ -1,7 +1,7 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/12/22
 import abc
-from typing import Optional
+from typing import Optional, Union
 from requests import Response
 from src.CVAT.data_types import BasicUser, Task
 
@@ -37,3 +37,22 @@ class Get:
         """
         response: Response = self.session.get(url=f'{self.url}/api/tasks?search={task_name}&limit=10&is_active=true')
         return None if response.json()["count"] < 1 else Task.from_json(response.json()["results"][0])
+
+    def get_map_external_ids_frame(self, task: Task) -> dict:
+        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task.id}/data/meta')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        dest: dict = {}
+        json_response: dict = response.json()["frames"]
+        for idx, elem in enumerate(json_response):
+            dest[elem["name"]] = idx
+        return dest
+
+    def get_labels_map(self, task: Union[Task, str]) -> dict:
+        if isinstance(task, str):
+            task: Task = self.get_task_by_name(task)
+        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task.id}')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        json_response: dict = response.json()["labels"]
+        return dict([(elem["name"], elem["id"]) for elem in json_response])

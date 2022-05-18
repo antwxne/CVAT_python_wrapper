@@ -1,8 +1,8 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/16/22
-from typing import Optional, Type, Any
+from typing import Optional, Any
 
-TYPE_REF = [int, str, type(None), list, dict]
+TYPE_REF = {int, str, type(None), list, dict}
 
 
 def get_key_value(json_response: dict, key: str) -> Optional[Any]:
@@ -41,10 +41,29 @@ class BasicUser(CVATData):
         return new_user
 
 
+class PatchedLabel(CVATData):
+    def __init__(self):
+        self.id: Optional[int] = None
+        self.name: Optional[str] = None
+        self.color: Optional[str] = None
+        self.attributes: list[dict] = []
+        self.deleted: bool = False
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: PatchedLabel = PatchedLabel()
+        new_obj.id = get_key_value(json_response, "id")
+        new_obj.name = get_key_value(json_response, "name")
+        new_obj.color = get_key_value(json_response, "color")
+        new_obj.attributes = get_key_value(json_response, "attributes")
+        new_obj.deleted = get_key_value(json_response, "deleted")
+        return new_obj
+
+
 class Task(CVATData):
-    def __init__(self, name, labels: Optional[list[dict]] = None, project_id: Optional[int] = None):
+    def __init__(self, name, labels: Optional[list[PatchedLabel]] = None, project_id: Optional[int] = None):
         self.name: str = name
-        self.labels: list[dict] = labels
+        self.labels: list[PatchedLabel] = labels
         self.project_id: Optional[int] = project_id
         self.url: Optional[str] = None
         self.id: Optional[int] = None
@@ -77,13 +96,15 @@ class Task(CVATData):
     def from_json(json_response: dict):
         new_task: Task = Task(name="", project_id=0)
         new_task.name = get_key_value(json_response, "name")
-        new_task.labels = get_key_value(json_response, "labels")
+
+        labels: Optional[list[dict]] = get_key_value(json_response, "labels")
+        new_task.labels = [PatchedLabel.from_json(label) for label in labels] if labels is not None else None
         new_task.project_id = get_key_value(json_response, "project_id")
         new_task.url = get_key_value(json_response, "url")
         new_task.id = get_key_value(json_response, "id")
         new_task.mode = get_key_value(json_response, "mode")
 
-        owner: Optional[dict] = get_key_value(json_response, "url")
+        owner: Optional[dict] = get_key_value(json_response, "owner")
         new_task.owner = BasicUser.from_json(owner) if owner is not None else None
 
         assignee: Optional[dict] = get_key_value(json_response, "assignee")
@@ -107,3 +128,148 @@ class Task(CVATData):
         new_task.subset = get_key_value(json_response, "subset")
         new_task.organization = get_key_value(json_response, "organization")
         return new_task
+
+
+class AttributeVal(CVATData):
+    def __init__(self):
+        self.spec_id: Optional[int] = None
+        self.value: Optional[str] = None
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: LabeledImage = LabeledImage()
+        new_obj.spec_id = get_key_value(json_response, "spec_id")
+        new_obj.value = get_key_value(json_response, "value")
+        return new_obj
+
+
+class LabeledImage(CVATData):
+    def __init__(self):
+        self.id: Optional[int] = None
+        self.frame: Optional[int] = None
+        self.label_id: Optional[int] = None
+        self.group: Optional[int] = None
+        self.source: Optional[str] = None
+        self.attributes: list[AttributeVal] = []
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_labeled_image: LabeledImage = LabeledImage()
+        new_labeled_image.id = get_key_value(json_response, "id")
+        new_labeled_image.frame = get_key_value(json_response, "frame")
+        new_labeled_image.label_id = get_key_value(json_response, "label_id")
+        new_labeled_image.group = get_key_value(json_response, "group")
+        new_labeled_image.source = get_key_value(json_response, "source")
+        attributes = get_key_value(json_response, "attributes")
+        new_labeled_image.attributes = [AttributeVal.from_json(attribute) for attribute in
+                                        attributes] if attributes is not None else []
+        return new_labeled_image
+
+
+class LabeledShape(CVATData):
+    def __init__(self):
+        self.type: Optional[str] = None
+        self.occluded: Optional[bool] = None
+        self.z_order: Optional[int] = None
+        self.rotation: Optional[float] = None
+        self.points: Optional[list[float]] = None
+        self.id: Optional[int] = None
+        self.frame: Optional[int] = None
+        self.label_id: Optional[int] = None
+        self.group: Optional[int] = None
+        self.source: Optional[str] = None
+        self.attributes: list[AttributeVal] = []
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: LabeledShape = LabeledShape()
+        new_obj.type = get_key_value(json_response, "type")
+        new_obj.occluded = get_key_value(json_response, "occluded")
+        new_obj.z_order = get_key_value(json_response, "z_order")
+        new_obj.rotation = get_key_value(json_response, "rotation")
+        new_obj.points = get_key_value(json_response, "points")
+        new_obj.id = get_key_value(json_response, "id")
+        new_obj.frame = get_key_value(json_response, "frame")
+        new_obj.label_id = get_key_value(json_response, "label_id")
+        new_obj.group = get_key_value(json_response, "group")
+        new_obj.source = get_key_value(json_response, "source")
+        attributes = get_key_value(json_response, "attributes")
+        new_obj.attributes = [AttributeVal.from_json(attribute) for attribute in
+                              attributes] if attributes is not None else []
+        return new_obj
+
+
+class TrackedShape(CVATData):
+    def __init__(self):
+        self.type: Optional[str] = None
+        self.occluded: Optional[bool] = None
+        self.z_order: Optional[int] = None
+        self.rotation: Optional[float] = None
+        self.points: Optional[list[float]] = None
+        self.id: Optional[int] = None
+        self.frame: Optional[int] = None
+        self.outside: Optional[bool] = None
+        self.attributes: list[AttributeVal] = []
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: TrackedShape = TrackedShape()
+        new_obj.type = get_key_value(json_response, "type")
+        new_obj.occluded = get_key_value(json_response, "occluded")
+        new_obj.z_order = get_key_value(json_response, "z_order")
+        new_obj.rotation = get_key_value(json_response, "rotation")
+        new_obj.points = get_key_value(json_response, "points")
+        new_obj.id = get_key_value(json_response, "id")
+        new_obj.frame = get_key_value(json_response, "frame")
+        new_obj.outside = get_key_value(json_response, "outside")
+
+        attributes = get_key_value(json_response, "attributes")
+        new_obj.attributes = [AttributeVal.from_json(attribute) for attribute in
+                              attributes] if attributes is not None else []
+        return new_obj
+
+
+class LabeledTrack(CVATData):
+    def __init__(self):
+        self.id: Optional[int] = None
+        self.frame: Optional[int] = None
+        self.label_id: Optional[int] = None
+        self.group: Optional[int] = None
+        self.source: Optional[str] = None
+        self.shapes: list[TrackedShape] = []
+        self.attributes: list[AttributeVal] = []
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: LabeledTrack = LabeledTrack()
+        new_obj.id = get_key_value(json_response, "id")
+        new_obj.frame = get_key_value(json_response, "frame")
+        new_obj.label_id = get_key_value(json_response, "label_id")
+        new_obj.group = get_key_value(json_response, "group")
+        new_obj.source = get_key_value(json_response, "source")
+        shapes = get_key_value(json_response, "shapes")
+        new_obj.attributes = [TrackedShape.from_json(shape) for shape in
+                              shapes] if shapes is not None else []
+        attributes = get_key_value(json_response, "attributes")
+        new_obj.attributes = [AttributeVal.from_json(attribute) for attribute in
+                              attributes] if attributes is not None else []
+        return new_obj
+
+
+class LabeledData(CVATData):
+    def __init__(self):
+        self.version: int = 0
+        self.tags: list[LabeledImage] = []
+        self.shapes: list[LabeledImage] = []
+        self.tracks: list[LabeledImage] = []
+
+    @staticmethod
+    def from_json(json_response: dict):
+        new_obj: LabeledData = LabeledData()
+        tags: Optional[dict] = get_key_value(json_response, "tags")
+        new_obj.tags = LabeledImage.from_json(tags) if tags is not None else []
+        shapes: Optional[dict] = get_key_value(json_response, "shapes")
+        new_obj.shapes = LabeledShape.from_json(shapes) if tags is not None else []
+        tracks: Optional[dict] = get_key_value(json_response, "tracks")
+        new_obj.tracks = LabeledTrack.from_json(tracks) if tracks is not None else []
+        return new_obj

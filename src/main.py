@@ -7,5 +7,6 @@ from src.CVAT.data_types import Task
 API: CVAT = CVAT()
 
 if __name__ == "__main__":
-    API.assign_user_to_task(task_name="667", username="admin")
-
+    task: Task = API.get_task_by_name("Test api")
+    API.assign_user_to_task(task, task.owner)
+    API.upload_predictions(task, format="COCO+1.0", filename="../new_annotations.json")

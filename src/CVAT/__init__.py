@@ -9,6 +9,7 @@ from ._get import Get
 from ._patch import Patch
 from ._post import Post
 from ._static import Static
+from .data_types import Task
 
 
 class CVAT(Get, Post, Delete, Patch, Static):
@@ -35,3 +36,4 @@ class CVAT(Get, Post, Delete, Patch, Static):
         self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
+

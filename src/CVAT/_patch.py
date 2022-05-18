@@ -15,18 +15,14 @@ class Patch:
     def __init__(self):
         raise NotImplementedError
 
-    def assign_user_to_task(self, task_name: str, username: str) -> None:
+    def assign_user_to_task(self, task: Task, user: BasicUser) -> None:
         """
-        It takes a task name and a username as arguments, and assigns the user to the task
+        It takes a task and a user, and assigns the user to the task
 
         Args:
-          task_name (str): str - The name of the task you want to assign a user to.
-          username (str): The username of the user you want to assign the task to.
+          task (Task): Task - the task you want to assign a user to
+          user (BasicUser): BasicUser = The user you want to assign to the task.
         """
-        task: Optional[Task] = self.get_task_by_name(task_name)
-        user: Optional[BasicUser] = self.get_user_by_username(username)
-        if user is None or task is None:
-            raise ValueError(f'{username}: user doesn\'t exist.' if user is None else f'{task_name}: task doesn\'t exist.')
         body: dict = {"assignee_id": user.id}
         response: Response = self.session.patch(url=f'{self.url}/api/tasks/{task.id}',
                                                 json=body)
