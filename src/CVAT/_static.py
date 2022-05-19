@@ -1,9 +1,13 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/17/22
 import abc
+import json
+from typing import Union
 
 import requests
 from requests import Response
+
+from src.CVAT import Task
 
 
 class Static:
@@ -44,3 +48,8 @@ class Static:
         """
         response: Response = requests.get(url=url)
         return response.url
+
+    @staticmethod
+    def get_json_from_file(path: str) -> dict:
+        with open(path, "r") as f:
+            return json.loads(f.read())

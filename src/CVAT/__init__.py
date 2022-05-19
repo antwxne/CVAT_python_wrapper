@@ -9,10 +9,11 @@ from ._get import Get
 from ._patch import Patch
 from ._post import Post
 from ._static import Static
+from ._put import Put
 from .data_types import Task
 
 
-class CVAT(Get, Post, Delete, Patch, Static):
+class CVAT(Get, Post, Delete, Patch, Put, Static):
     def __init__(self, username: str = "admin", password: str = "admin", url: str = "http://localhost:8080"):
         """
         This function takes in a username, password, and url and uses them to log into the Grafana API
@@ -36,4 +37,3 @@ class CVAT(Get, Post, Delete, Patch, Static):
         self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
-

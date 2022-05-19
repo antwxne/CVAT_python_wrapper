@@ -47,29 +47,3 @@ class Post:
             json=body)
         if response.status_code != 202:
             raise ValueError(response.content)
-
-    def upload_predictions(self, task: Task, format: str, filename: str) -> None:
-        """
-        Uploads predictions for a given task in a given format to a given filename
-
-        Args:
-          task (Task): The task object that you want to upload predictions for.
-          format (str): The format of the file you're uploading.
-          filename (str): The name of the file to upload.
-        """
-        # response: Response = self.session.post(
-        #     url=f'{self.url}/api/tasks/{task.id}/annotations?format={format}&filename={filename}')
-        # if response.status_code != 202:
-        #     raise Exception(response.content)
-        # response: Response = self.session.post(
-        #     url=f'{self.url}/api/tasks/{task.id}/annotations')
-        # if response.status_code != 201:
-        #     raise Exception(response.content)
-        with open(filename, "r") as f:
-            body: dict = json.loads(f.read())
-        response: Response = self.session.patch(
-            url=f'{self.url}/api/tasks/{task.id}/annotations?action=create&format={format}&filename={filename}',
-            json=body
-        )
-        if response.status_code != 204:
-            raise Exception(response.content)
