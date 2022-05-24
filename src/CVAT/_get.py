@@ -6,9 +6,9 @@ from typing import Optional, Union
 
 from requests import Response
 
-from src.CVAT.Predictions.Foodvisor import Foodvisor
-from src.CVAT.Predictions.Interface import IPrediction
-from src.CVAT.data_types import BasicUser, Task, Image, PatchedLabel
+from .Predictions.Foodvisor import Foodvisor
+from .Predictions.Interface import IPrediction
+from .data_types import BasicUser, Task, Image, PatchedLabel
 
 
 class Get:

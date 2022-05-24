@@ -2,11 +2,11 @@
 # Created by antoine.desruet@epitech.eu at 5/12/22
 
 import abc
-import json
 from typing import Optional
 
 from requests import Response
-from src.CVAT.data_types import Task
+
+from .data_types import Task
 
 
 class Post:
@@ -74,3 +74,26 @@ class Post:
             if interface:
                 self.add_interface_to_project(project_id, interface)
         return project_id
+
+    def add_local_images_to_task(self, task: Task, images_path: list[str], quality: int = 100):
+        """
+        It takes a list of local image paths, uploads them to the server, and adds them to the task
+
+        Args:
+          task (Task): Task - the task object that you want to add images to
+          images_path (list[str]): list[str] - a list of paths to the images you want to add to the task
+          quality (int): The quality of the image. Defaults to 100
+        """
+        body: dict = {
+            "image_quality": (None, quality),
+            "use_zip_chunks": (None, "true"),
+            "use_cache": (None, "true"),
+            "sorting_method": (None, "lexicographical"),
+        }
+        files: dict = {'client_files[{}]'.format(i): open(f, 'rb') for i, f in enumerate(images_path)}
+        response: Response = self.session.post(url=f'{self.url}/api/tasks/{task.id}/data',
+                                               data=body,
+                                               files=files)
+
+        if response.status_code != 202:
+            raise Exception(response.content)

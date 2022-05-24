@@ -5,7 +5,7 @@ from typing import Union
 
 from requests import Response
 
-from src.CVAT.data_types import Task
+from .data_types import Task
 
 
 class Delete:
@@ -25,7 +25,7 @@ class Delete:
         if response.status_code != 204:
             raise Exception(response.content)
 
-    def delete_project(self, project_id:int):
+    def delete_project(self, project_id: int):
         """
         This function deletes a project from the database
 

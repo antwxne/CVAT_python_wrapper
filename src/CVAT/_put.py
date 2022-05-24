@@ -4,8 +4,9 @@
 import abc
 
 from requests import Response
-from src.CVAT.data_types import Task
-from src.CVAT.Predictions.Interface import IPrediction
+
+from .Predictions.Interface import IPrediction
+from .data_types import Task
 
 
 class Put:

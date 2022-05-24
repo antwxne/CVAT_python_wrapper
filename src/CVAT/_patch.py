@@ -2,12 +2,10 @@
 # Created by antoine.desruet@epitech.eu at 5/12/22
 import abc
 
-from typing import Optional
-
 import requests
 from requests import Response
 
-from src.CVAT.data_types import Task, BasicUser
+from .data_types import Task, BasicUser
 
 
 class Patch:
@@ -28,3 +26,16 @@ class Patch:
                                                 json=body)
         if response.status_code != 200:
             raise requests.HTTPError(response.content)
+
+    def add_interface_to_project(self, project: int, interface: dict):
+        """
+        This function takes a project ID and an interface dictionary as arguments and adds the interface to the project
+
+        Args:
+          project (int): int - The project ID
+          interface (dict): dict = {
+        """
+        response: Response = self.session.patch(url=f'{self.url}/api/projects/{project}',
+                                                json=interface)
+        if response.status_code != 200:
+            raise Exception(response.content)

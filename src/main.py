@@ -19,7 +19,7 @@ if __name__ == "__main__":
     directory: str = "data/Images/Fromages"
     interface: dict = CVAT.get_json_from_file("../interface_foodvisor.json")
     images_path: list[str] = image_content_from_kili_prediction(prediction_json, directory)
-    project_id: int = API.create_project("TEST_API", interface=interface)
+    project_id: int = API.create_project("TEST_API2", interface=interface)
     task: Task = Task("jqefhgfdqf", project_id=project_id)
     # task: Task = API.get_task_by_name("qsfqsfqsf")
     task = API.create_task(task)
