@@ -1,7 +1,9 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/12/22
 import abc
+from time import sleep
 from typing import Optional, Union
+
 from requests import Response
 
 from src.CVAT.Predictions.Foodvisor import Foodvisor
@@ -53,14 +55,15 @@ class Get:
         """
         if isinstance(task, str):
             task: Task = self.get_task_by_name(task)
-        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task.id}/data/meta')
-        if response.status_code != 200:
-            raise Exception(response.content)
-        dest: dict = {}
-        json_response: dict = response.json()["frames"]
-        for idx, elem in enumerate(json_response):
-            dest[elem["name"]] = Image(elem, idx)
-        return dest
+        while True:
+            response: Response = self.session.get(url=f'{self.url}/api/tasks/{task.id}/data/meta')
+            if response.status_code != 200:
+                raise Exception(response.content)
+            json_response: dict = response.json()["frames"]
+            if json_response:
+                break
+            sleep(1)  # to wait upload of image
+        return {elem["name"].split(".")[0]: Image(elem, idx) for idx, elem in enumerate(json_response)}
 
     def get_labels_map(self, task: Union[Task, str]) -> dict:
         """
@@ -108,3 +111,21 @@ class Get:
         frame_map: dict = self.get_map_external_ids_frame(task)
         labels_map: dict = self.get_labels_map(task)
         return Get.PREDICTION_FACTORY[prediction_type](prediction_json, frame_map, labels_map)
+
+    def get_project_by_name(self, project_name: str) -> int:
+        """
+        It takes a project name as a string and returns the project ID as an integer
+
+        Args:
+          project_name (str): The name of the project you want to get the ID for.
+
+        Returns:
+          The project id
+        """
+        response: Response = self.session.get(url=f'{self.url}/api//projects?search={project_name}')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        for project in response.json()["results"]:
+            if project["name"] == project_name:
+                return project["id"]
+        raise ValueError(f'{project_name}: project not found')

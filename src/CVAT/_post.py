@@ -50,14 +50,27 @@ class Post:
             raise ValueError(response.content)
 
     def create_project(self, project_name: str, interface: Optional[dict] = None) -> int:
-        body: dict = {
-            "name": project_name
-        }
-        response: Response = self.session.post(url=f'{self.url}/api/projects',
-                                               json=body)
-        if response.status_code != 201:
-            raise Exception(response.content)
-        project_id: int = response.json()["id"]
-        if interface:
-            self.add_interface_to_project(project_id, interface)
+        """
+        It creates a project with the name `project_name` and returns the project id
+
+        Args:
+          project_name (str): The name of the project you want to create.
+          interface (Optional[dict]): dict = {
+
+        Returns:
+          The project ID
+        """
+        try:
+            project_id: int = self.get_project_by_name(project_name)
+        except ValueError:
+            body: dict = {
+                "name": project_name
+            }
+            response: Response = self.session.post(url=f'{self.url}/api/projects',
+                                                   json=body)
+            if response.status_code != 201:
+                raise Exception(response.content)
+            project_id: int = response.json()["id"]
+            if interface:
+                self.add_interface_to_project(project_id, interface)
         return project_id

@@ -50,26 +50,17 @@ class CVAT(Get, Post, Delete, Patch, Put, Static):
 
     def add_local_images_to_task(self, task: Task, images_path: list[str], quality: int = 100):
         body: dict = {
-            "image_quality": (None, 1),
+            "image_quality": (None, quality),
             "use_zip_chunks": (None, "true"),
             "use_cache": (None, "true"),
             "sorting_method": (None, "lexicographical"),
         }
-        files: dict = {}
-        # files = {'client_files[{}]'.format(i): open(f, 'rb') for i, f in enumerate(resources)}
-        for index, image in enumerate(images_path):
-            files[f'client_files[{index}]'] = (image.split("/")[-1], open(image, "rb"), "image/jpeg")
-
+        files: dict = {'client_files[{}]'.format(i): open(f, 'rb') for i, f in enumerate(images_path)}
         response: Response = self.session.post(url=f'{self.url}/api/tasks/{task.id}/data',
-                                               json=body,
+                                               data=body,
                                                files=files)
-        a = 0
 
-    def get_project_by_name(self, project_name: str) -> int:
-        response: Response = self.session.get(url=f'{self.url}/api//projects?search={project_name}')
-        if response.status_code != 200:
+        if response.status_code != 202:
             raise Exception(response.content)
-        for project in response.json()["results"]:
-            if project["name"] == project_name:
-                return project["id"]
-        raise ValueError(f'{project_name}: project not found')
+
+

@@ -34,6 +34,7 @@ class Static:
           The url of the image
         """
         response: Response = requests.get(url=url)
+        path += "." + response.headers["Content-Type"].split("/")[-1]
         try:
             with open(path, "wb+") as f:
                 f.write(response.content)
@@ -41,7 +42,7 @@ class Static:
             create_dir("/".join(path.split("/")[:-1:]))
             with open(path, "wb+") as f:
                 f.write(response.content)
-        return response.url
+        return path
 
     @staticmethod
     def get_redirect_url(url: str) -> str:

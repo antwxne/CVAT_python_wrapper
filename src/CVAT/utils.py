@@ -11,9 +11,5 @@ def image_content_from_kili_prediction(prediction: list[dict], directory: str) -
     paths: list[str] = []
     for elem in tqdm(prediction, unit="Image"):
         path: str = f'{directory}/{elem["externalId"]}'
-        if not Path(path).is_file():
-            CVAT.download_image(elem["content"], path)
-        paths.append(path)
+        paths.append(CVAT.download_image(elem["content"], path))
     return paths
-
-

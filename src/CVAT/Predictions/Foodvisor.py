@@ -29,14 +29,29 @@ class Foodvisor(IPrediction):
             self.image = image
             self.bonne_reponse: PatchedLabel = label_map["Bonne reponse"]
             self.choice: PatchedLabel = label_map["Mon choix"]
+            content_type: str = self.get_type(json_content)
             self.annotations: list[Foodvisor.Asset.Annotation] = [
-                Foodvisor.Asset.Annotation(annotation, image, label_map) for annotation in json_content["ALIMENTS"]["annotations"]
+                Foodvisor.Asset.Annotation(annotation, image, label_map) for annotation in
+                json_content[content_type]["annotations"]
             ]
 
         def to_shapes(self) -> list[dict]:
+            """
+            > This function takes in a list of annotations and returns a list of dictionaries
+
+            Returns:
+              A list of dictionaries.
+            """
             return [annotation.to_json() for annotation in self.annotations]
 
         def to_tags(self) -> list[dict]:
+            """
+            > The function takes a `Question` object as input and returns a list of dictionaries, each of which represents a
+            tag
+
+            Returns:
+              A list of dictionaries.
+            """
             tags = [{
                 "frame": self.image.frame_number,
                 "label_id": self.choice.id,
@@ -66,6 +81,20 @@ class Foodvisor(IPrediction):
                 )
             return tags
 
+        @staticmethod
+        def get_type(json_content: dict) -> str:
+            """
+            It returns the first key of the dictionary that is in the set of keys
+
+            Args:
+              json_content (dict): the json file
+
+            Returns:
+              The type of the json file.
+            """
+            ref: set[str] = {"ALIMENTS", "MELANGES", "INGREDIENTS", "INGREDIENTS_PETITS", "INDUSTRIELS_EMBALLES"}
+            return next(key for key in json_content.keys() if key in ref)
+
         class Annotation:
             def __init__(self, annotation: dict, image: Image, label_map: dict):
                 self.image: Image = image
@@ -88,6 +117,16 @@ class Foodvisor(IPrediction):
 
             @staticmethod
             def get_points(polylines: list[dict], image: Image) -> list[float]:
+                """
+                `get_points` takes a list of dictionaries and an image, and returns a list of floats
+
+                Args:
+                  polylines (list[dict]): list[dict]
+                  image (Image): The image to be processed.
+
+                Returns:
+                  A list of floats.
+                """
                 dest: list[float] = []
                 for elem in polylines:
                     dest.extend([elem["x"] * image.width, elem["y"] * image.height])
