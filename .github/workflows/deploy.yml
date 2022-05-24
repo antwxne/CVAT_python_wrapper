@@ -20,7 +20,7 @@ jobs:
         run: python3 -m pip install build twine --upgrade
 
       - name: Install requirements
-        run: python3 -m pip install -r requirements --upgrade
+        run: python3 -m pip install -r requirements.txt --upgrade
 
       - name: Build package
         run: python3 -m build
