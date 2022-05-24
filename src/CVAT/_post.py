@@ -3,6 +3,7 @@
 
 import abc
 import json
+from typing import Optional
 
 from requests import Response
 from src.CVAT.data_types import Task
@@ -47,3 +48,16 @@ class Post:
             json=body)
         if response.status_code != 202:
             raise ValueError(response.content)
+
+    def create_project(self, project_name: str, interface: Optional[dict] = None) -> int:
+        body: dict = {
+            "name": project_name
+        }
+        response: Response = self.session.post(url=f'{self.url}/api/projects',
+                                               json=body)
+        if response.status_code != 201:
+            raise Exception(response.content)
+        project_id: int = response.json()["id"]
+        if interface:
+            self.add_interface_to_project(project_id, interface)
+        return project_id

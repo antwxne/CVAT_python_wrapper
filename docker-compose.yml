@@ -5,4 +5,7 @@ services:
     container_name: cvat_wrapper
     volumes:
       - ./src:/app/src
+      - data:/app/data
     network_mode: host
+volumes:
+  data:

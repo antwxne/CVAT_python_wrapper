@@ -2,12 +2,15 @@
 # Created by antoine.desruet@epitech.eu at 5/17/22
 import abc
 import json
+from pathlib import Path
 from typing import Union
 
 import requests
 from requests import Response
 
-from src.CVAT import Task
+
+def create_dir(folder: str):
+    Path(folder).mkdir(parents=True, exist_ok=True)
 
 
 class Static:
@@ -31,8 +34,13 @@ class Static:
           The url of the image
         """
         response: Response = requests.get(url=url)
-        with open(path, "wb+") as f:
-            f.write(response.content)
+        try:
+            with open(path, "wb+") as f:
+                f.write(response.content)
+        except FileNotFoundError:
+            create_dir("/".join(path.split("/")[:-1:]))
+            with open(path, "wb+") as f:
+                f.write(response.content)
         return response.url
 
     @staticmethod
@@ -50,6 +58,6 @@ class Static:
         return response.url
 
     @staticmethod
-    def get_json_from_file(path: str) -> dict:
+    def get_json_from_file(path: str) -> Union[dict, list[dict]]:
         with open(path, "r") as f:
             return json.loads(f.read())
