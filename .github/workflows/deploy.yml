@@ -19,6 +19,9 @@ jobs:
       - name: Install build tools
         run: python3 -m pip install build twine --upgrade
 
+      - name: Install requirements
+        run: python3 -m pip install -r requirements --upgrade
+
       - name: Build package
         run: python3 -m build
 
