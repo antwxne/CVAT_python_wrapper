@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TWINE_USERNAME: __token__
-      TWINE_PASSWORD: ${{ secret.TWINE_PASSWORD }}
+      TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
 
