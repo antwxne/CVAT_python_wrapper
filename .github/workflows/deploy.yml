@@ -1,0 +1,26 @@
+name: Deploy to Pypi
+
+on:
+  release:
+    types:
+      - released
+  push:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      TWINE_USERNAME: __token__
+      TWINE_PASSWORD: ${{ secret.TWINE_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install build tools
+        run: python3 -m pip install build twine --upgrade
+
+      - name: Build package
+        run: python3 -m build
+
+      - name: Deploy to Pypi
+        run: python3 -m twine upload --repository testpypi dist/*
