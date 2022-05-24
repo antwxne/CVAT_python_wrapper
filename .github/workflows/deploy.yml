@@ -26,4 +26,4 @@ jobs:
         run: python3 -m build
 
       - name: Deploy to Pypi
-        run: python3 -m twine upload --repository testpypi dist/*
+        run: python3 -m twine upload --verbose --repository testpypi dist/*
