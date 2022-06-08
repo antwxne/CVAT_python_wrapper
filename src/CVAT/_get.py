@@ -112,6 +112,24 @@ class Get:
         labels_map: dict = self.get_labels_map(task)
         return Get.PREDICTION_FACTORY[prediction_type](prediction_json, frame_map, labels_map)
 
+    def get_prediction_from_json(self, task: Union[Task, str], prediction_type: str, prediction: dict) -> IPrediction:
+        """
+        > The function takes a task, a prediction type, and a prediction dictionary, and returns a prediction object
+
+        Args:
+          task (Union[Task, str]): The name of the task.
+          prediction_type (str): str - the type of prediction. It can be one of the following:
+          prediction (dict): dict - the prediction in the JSON format
+        """
+        if isinstance(task, str):
+            task: Task = self.get_task_by_name(task)
+        if prediction_type not in Get.PREDICTION_FACTORY:
+            raise ValueError(
+                f'Prediction type must be one of {Get.PREDICTION_FACTORY.keys()}. Actual: {prediction_type}')
+        frame_map: dict = self.get_map_external_ids_frame(task)
+        labels_map: dict = self.get_labels_map(task)
+        return Get.PREDICTION_FACTORY[prediction_type](prediction, frame_map, labels_map)
+
     def get_project_by_name(self, project_name: str) -> int:
         """
         It takes a project name as a string and returns the project ID as an integer
