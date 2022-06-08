@@ -107,12 +107,12 @@ class Get:
         if prediction_type not in Get.PREDICTION_FACTORY:
             raise ValueError(
                 f'Prediction type must be one of {Get.PREDICTION_FACTORY.keys()}. Actual: {prediction_type}')
-        prediction_json: dict = self.get_json_from_file(prediction_path)
+        prediction_json: Union[dict, list[dict]] = self.get_json_from_file(prediction_path)
         frame_map: dict = self.get_map_external_ids_frame(task)
         labels_map: dict = self.get_labels_map(task)
         return Get.PREDICTION_FACTORY[prediction_type](prediction_json, frame_map, labels_map)
 
-    def get_prediction_from_json(self, task: Union[Task, str], prediction_type: str, prediction: dict) -> IPrediction:
+    def get_prediction_from_json(self, task: Union[Task, str], prediction_type: str, prediction: Union[dict, list[dict]]) -> IPrediction:
         """
         > The function takes a task, a prediction type, and a prediction dictionary, and returns a prediction object
 
