@@ -11,7 +11,6 @@ from ._post import Post
 from ._put import Put
 from ._static import Static
 from .data_types import Task
-from .Prediction import *
 
 
 class CVAT(Get, Post, Delete, Patch, Put, Static):

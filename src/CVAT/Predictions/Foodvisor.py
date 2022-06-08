@@ -1,7 +1,7 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/18/22
 
-from src.CVAT.Predictions.Interface import IPrediction
+from .Interface import IPrediction
 from src.CVAT.data_types import LabeledData, Image, PatchedLabel
 
 
