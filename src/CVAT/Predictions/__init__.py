@@ -1,2 +1,2 @@
 from .Foodvisor import *
-from Interface import IPrediction
+from .Interface import IPrediction

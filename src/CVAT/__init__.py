@@ -37,3 +37,18 @@ class CVAT(Get, Post, Delete, Patch, Put, Static):
         self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
+
+    def create_user(self, user_name: str, user_mail: str, password: str, first_name: str, last_name: str) -> None:
+        body: dict = {
+            "username": user_name,
+            "email": user_mail,
+            "password1": password,
+            "password2": password,
+            "first_name": first_name,
+            "last_name": last_name,
+            "confirmations": []
+        }
+        response: Response = self.session.post(url=f'{self.url}/api/auth/register',
+                                               json=body)
+        if response.status_code != 201:
+            raise Exception(response.content)
