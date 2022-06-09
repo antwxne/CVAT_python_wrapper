@@ -23,8 +23,11 @@ class IPrediction:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def export(self) -> LabeledData:
+    def export(self, display_response: bool = False) -> LabeledData:
         """
-        > This function takes in a `self` object and returns a `LabeledData` object
+        > This function takes in a boolean value and returns a LabeledData object
+
+        Args:
+          display_response (bool): If True, the response will be displayed in the output. Defaults to False
         """
         raise NotImplementedError

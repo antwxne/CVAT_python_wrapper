@@ -12,7 +12,7 @@ class Foodvisor(IPrediction):
             asset["externalId"] in frame_map
         ]
 
-    def export(self) -> LabeledData:
+    def export(self, display_response: bool = False) -> LabeledData:
         shapes: list[dict] = []
         tags: list[dict] = []
         for asset in self.assets:
@@ -44,7 +44,7 @@ class Foodvisor(IPrediction):
             """
             return [annotation.to_json() for annotation in self.annotations]
 
-        def to_tags(self) -> list[dict]:
+        def to_tags(self, display_response: bool = False) -> list[dict]:
             """
             > The function takes a `Question` object as input and returns a list of dictionaries, each of which represents a
             tag
@@ -52,19 +52,21 @@ class Foodvisor(IPrediction):
             Returns:
               A list of dictionaries.
             """
-            tags = [{
-                "frame": self.image.frame_number,
-                "label_id": self.choice.id,
-                "group": 0,
-                "source": "manual",
-                "attributes": [
-                    {
-                        "spec_id": self.choice.attributes[0]["id"],
-                        "value": "Je ne sais pas"
-                    }
-                ]
-            }]
-            if True:
+            tags: list[dict] = []
+            if not display_response:
+                tags.append({
+                    "frame": self.image.frame_number,
+                    "label_id": self.choice.id,
+                    "group": 0,
+                    "source": "manual",
+                    "attributes": [
+                        {
+                            "spec_id": self.choice.attributes[0]["id"],
+                            "value": "Je ne sais pas"
+                        }
+                    ]
+                })
+            else:
                 tags.append(
                     {
                         "frame": self.image.frame_number,
