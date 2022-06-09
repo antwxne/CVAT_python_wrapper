@@ -21,7 +21,7 @@ task = API.create_task(task)
 
 All the documentation is made with _python google docstring_.
 
-## Contributeurs
+## Contributors
 
 - Antoine Desruet [![github-link][github-logo]](https://github.com/antwxne)
 

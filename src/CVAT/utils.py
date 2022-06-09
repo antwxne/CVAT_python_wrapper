@@ -6,7 +6,7 @@ from typing import Optional
 
 from tqdm import tqdm
 
-from src.CVAT import CVAT
+from . import CVAT
 
 
 def tryint(s):

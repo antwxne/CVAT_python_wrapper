@@ -239,8 +239,6 @@ class LabeledTrack(CVATData):
         new_obj.attributes = [TrackedShape.from_json(shape) for shape in
                               shapes] if shapes is not None else []
         new_obj.attributes = get_key_value(json_response, "attributes")
-        # new_obj.attributes = [AttributeVal.from_json(attribute) for attribute in
-        #                       attributes] if attributes is not None else []
         return new_obj
 
 

@@ -97,3 +97,28 @@ class Post:
 
         if response.status_code != 202:
             raise Exception(response.content)
+
+    def create_user(self, user_name: str, user_mail: str, password: str, first_name: str, last_name: str) -> None:
+        """
+        It creates a user with the given parameters
+
+        Args:
+          user_name (str): The username of the user you want to create.
+          user_mail (str): The email address of the user.
+          password (str): The password for the user.
+          first_name (str): The first name of the user
+          last_name (str): str, first_name: str, user_mail: str, user_name: str, password: str
+        """
+        body: dict = {
+            "username": user_name,
+            "email": user_mail,
+            "password1": password,
+            "password2": password,
+            "first_name": first_name,
+            "last_name": last_name,
+            "confirmations": []
+        }
+        response: Response = self.session.post(url=f'{self.url}/api/auth/register',
+                                               json=body)
+        if response.status_code != 201:
+            raise Exception(response.content)
