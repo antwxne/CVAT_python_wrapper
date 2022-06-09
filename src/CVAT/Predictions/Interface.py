@@ -2,7 +2,7 @@
 import abc
 from typing import Union
 
-from src.CVAT.data_types import LabeledData
+from ..data_types import LabeledData
 
 
 # This class is an interface for a prediction object.

@@ -2,7 +2,7 @@
 # Created by antoine.desruet@epitech.eu at 5/18/22
 
 from .Interface import IPrediction
-from src.CVAT.data_types import LabeledData, Image, PatchedLabel
+from ..data_types import LabeledData, Image, PatchedLabel
 
 
 class Foodvisor(IPrediction):
