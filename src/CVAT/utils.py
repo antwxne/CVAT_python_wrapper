@@ -1,6 +1,7 @@
 #!/bin/python3
 # Created by antoine.desruet@epitech.eu at 5/23/22
 import re
+import sys
 from os import walk
 from typing import Optional
 
@@ -68,10 +69,12 @@ def image_content_from_kili_prediction(prediction: list[dict], directory: str) -
     paths: list[str] = []
     current_files: list[str] = get_files_from_path(directory)
     files_without_extension: list[str] = [file.split(".")[0] for file in current_files]
+    print(f'all files {files_without_extension}', file=sys.stderr)
     for elem in tqdm(prediction, unit="Image"):
         path: str = f'{directory}/{elem["externalId"]}'
         if path not in files_without_extension:
             paths.append(CVAT.download_image(elem["content"], path))
+            print(f"download {path}...", file=sys.stderr)
         else:
             paths.append(current_files[files_without_extension.index(path)])
     return paths
