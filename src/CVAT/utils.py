@@ -68,7 +68,13 @@ def image_content_from_kili_prediction(prediction: list[dict], directory: str) -
     """
     paths: list[str] = []
     current_files: list[str] = get_files_from_path(directory)
-    files_without_extension: list[str] = [file.split(".")[0] for file in current_files]
+    files_without_extension: list[str] = [ ]
+    for file in current_files:
+        splitted:list[str] = file.split(".")
+        if splitted[0] != "":
+            files_without_extension.append(splitted[0])
+        else:
+            files_without_extension.append("." + splitted[1])
     print(f'all files {files_without_extension}', file=sys.stderr)
     for elem in tqdm(prediction, unit="Image"):
         path: str = f'{directory}/{elem["externalId"]}'

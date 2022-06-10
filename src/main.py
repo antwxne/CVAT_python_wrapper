@@ -16,7 +16,7 @@ API: CVAT = CVAT()
 if __name__ == "__main__":
     # API.create_user("oui", "oui@gmail.com", "kgjhagkjlhlaegkj", "aaa", "aaaa")
     prediction_json: list[dict] = CVAT.get_json_from_file("./foodvisor_valid_12_2021_Fromages_gmd_predictions.json")
-    directory: str = "data/Images/Fromages"
+    directory: str = "./data/Images/Fromages"
     # interface: dict = CVAT.get_json_from_file("../interface_foodvisor.json")
     images_path: list[str] = image_content_from_kili_prediction(prediction_json, directory)
     # project_id: int = API.create_project("TEST_API2", interface=interface)
