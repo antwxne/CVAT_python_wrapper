@@ -30,7 +30,7 @@ class Get:
         response: Response = self.session.get(url=f'{self.url}/api/users?search={username}&limit=10&is_active=true')
         return None if response.json()["count"] < 1 else BasicUser.from_json(response.json()["results"][0])
 
-    def get_task_by_name(self, task_name: str):
+    def get_task_by_name(self, task_name: str) -> Optional[Task]:
         """
         > This function takes a task name as a string and returns a Task object if it exists, otherwise it returns None
 
@@ -42,6 +42,21 @@ class Get:
         """
         response: Response = self.session.get(url=f'{self.url}/api/tasks?search={task_name}&limit=10&is_active=true')
         return None if response.json()["count"] < 1 else Task.from_json(response.json()["results"][0])
+
+    def get_task_by_id(self, task_id: int) -> Task:
+        """
+        > This function takes in a task id and returns a task object
+
+        Args:
+          task_id (int): The ID of the task you want to get.
+
+        Returns:
+          A Task object
+        """
+        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task_id}')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        return Task.from_json(response.json())
 
     def get_map_external_ids_frame(self, task: Union[Task, str]) -> dict:
         """
@@ -112,7 +127,8 @@ class Get:
         labels_map: dict = self.get_labels_map(task)
         return Get.PREDICTION_FACTORY[prediction_type](prediction_json, frame_map, labels_map)
 
-    def get_prediction_from_json(self, task: Union[Task, str], prediction_type: str, prediction: Union[dict, list[dict]]) -> IPrediction:
+    def get_prediction_from_json(self, task: Union[Task, str], prediction_type: str,
+                                 prediction: Union[dict, list[dict]]) -> IPrediction:
         """
         > The function takes a task, a prediction type, and a prediction dictionary, and returns a prediction object
 
