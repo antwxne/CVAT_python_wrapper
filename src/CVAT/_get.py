@@ -161,4 +161,4 @@ class Get:
         response: Response = self.session.get(url=f'{self.url}/api/projects?search={project_name}')
         if response.status_code != 200:
             raise Exception(response.content)
-        return response.json()
+        return response.json()["results"][0]
