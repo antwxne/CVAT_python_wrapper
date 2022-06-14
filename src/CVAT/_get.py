@@ -178,3 +178,35 @@ class Get:
         if response.status_code != 200:
             raise Exception(response.content)
         return response.json()["results"][0]
+
+    def get_task_annotation(self, task: Union[Task, int]) -> dict:
+        """
+        It takes a task object or an integer as an argument and returns a dictionary of the task's annotations
+
+        Args:
+          task (Union[Task, int]): The task to get the annotation for.
+
+        Returns:
+          A dictionary of the task annotations.
+        """
+        task = task.id if isinstance(task, Task) else task
+        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task}/annotations')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        return Task.from_json(response.json())
+
+    def get_task_data(self, task: Union[Task, int]) -> dict:
+        """
+        It takes a task object or an integer as an argument, and returns a dictionary of the task's data
+
+        Args:
+          task (Union[Task, int]): The task you want to get the data for.
+
+        Returns:
+          A dictionary of the task data.
+        """
+        task = task.id if isinstance(task, Task) else task
+        response: Response = self.session.get(url=f'{self.url}/api/tasks/{task}/data/meta')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        return Task.from_json(response.json())
