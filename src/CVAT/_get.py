@@ -147,3 +147,18 @@ class Get:
             if project["name"] == project_name:
                 return project["id"]
         raise ValueError(f'{project_name}: project not found')
+
+    def get_project_infos(self, project_name: str) -> dict:
+        """
+        It takes a project name as a string and returns a dictionary of project information
+
+        Args:
+          project_name (str): The name of the project you want to get the information for.
+
+        Returns:
+          A dictionary of the project information.
+        """
+        response: Response = self.session.get(url=f'{self.url}/api/projects?search={project_name}')
+        if response.status_code != 200:
+            raise Exception(response.content)
+        return response.json()
