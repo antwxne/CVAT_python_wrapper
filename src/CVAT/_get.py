@@ -193,7 +193,7 @@ class Get:
         response: Response = self.session.get(url=f'{self.url}/api/tasks/{task}/annotations')
         if response.status_code != 200:
             raise Exception(response.content)
-        return Task.from_json(response.json())
+        return response.json()
 
     def get_task_data(self, task: Union[Task, int]) -> dict:
         """
@@ -209,4 +209,4 @@ class Get:
         response: Response = self.session.get(url=f'{self.url}/api/tasks/{task}/data/meta')
         if response.status_code != 200:
             raise Exception(response.content)
-        return Task.from_json(response.json())
+        return response.json()
