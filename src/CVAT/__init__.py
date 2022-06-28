@@ -34,8 +34,6 @@ class CVAT(Get, Post, Delete, Patch, Put, Static):
         }
         response: Response = self.session.post(url=f'{self.url}/api/auth/login',
                                                json=body)
-        self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}
         if response.status_code != 200:
             raise ValueError("Bad credentials")
-
-
+        self.session.headers = {"Authorization": f'Token {response.json()["key"]}'}

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="CVAT wrapper",
-    version="0.0.18",
+    version="1.0.0",
     author="antwxne",
     author_email="antoine.desruet@epitech.eu",
     description="Python wrapper for CVAT API",
